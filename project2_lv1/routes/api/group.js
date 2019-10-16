@@ -4,6 +4,8 @@ var fs = require('fs');
 var router = express.Router();
 var csv = require('csvtojson');
 var filePath = path.join("C:/Users/rndrn/Documents/sopt-server/project2_lv1/public/csvs/member.csv");
+
+
 /* API page. */
 router.get('/', function(req, res, next) {
     csv().fromFile(filePath).then((jsonArr) => {
