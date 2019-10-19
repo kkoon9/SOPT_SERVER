@@ -8,47 +8,44 @@ const filePath = path.join("C:/Users/rndrn/Documents/SOPT_SERVER/project2_lv3/pu
 const newfilePath = 'C:/Users/rndrn/Documents/SOPT_SERVER/project2_lv3/public/csvs/';
 const fileName = 'newMember.csv';
 
-/* API page. */
-router.get('/', function(req, res, next) {
+router.get('/', async function(req, res, next) {
     var Newarr = [];
-    csv().fromFile(filePath).then((jsonArr) => {
-        if(!jsonArr) {
-            console.log(`file read err: ${err}`);
-            res.send(err);
-        }
-        else{
-            var bufferArray = [];
-            const jsonSize = Object.keys(jsonArr).length;
-            console.log(`jsonSize : ${jsonSize}`);
-            for(let i =0; i< jsonSize; i++){
-                var result = Math.floor(Math.random() * jsonSize);
-                for(let j=0;j<i;j++){
-                    if(result == Newarr[j]){
-                        result = Math.floor(Math.random() * jsonSize);
-                        j = -1;
-                    }
+    const jsonArr = await csv().fromFile(filePath)
+    if(!jsonArr) {
+        console.log(`file read err: ${err}`);
+        res.send(err);
+    }
+    else {
+        let bufferArray = [];
+        const jsonSize = Object.keys(jsonArr).length;
+        console.log(`jsonSize : ${jsonSize}`);
+        for(let i =0; i< jsonSize; i++){
+            let result = Math.floor(Math.random() * jsonSize);
+            for(let j=0;j<i;j++){
+                if(result == Newarr[j]){
+                    result = Math.floor(Math.random() * jsonSize);
+                    j = -1;
                 }
-                Newarr.push(result);
             }
-            //console.log(Newarr);
-            for(var member in jsonArr){
-                var buffer = new Object();
-                var newIdx = Newarr[member];
-                buffer.name = jsonArr[newIdx].name;
-                buffer.groupIdx = jsonArr[member].groupIdx;
-                bufferArray.push(buffer);
-            }
-            res.send(bufferArray);
-            const resultCsv = json2csv.parse(bufferArray);
-            console.log(resultCsv);
-            fs.writeFile(path.join(newfilePath, fileName), resultCsv, (err) => {
-                if(err){
-                    console.log(err);
-                    //res.send(err);
-                }
-                //res.send("success");
-            });
+            Newarr.push(result);
         }
-    });
+        for(let member in jsonArr){
+            let buffer = new Object();
+            let newIdx = Newarr[member];
+            buffer.name = jsonArr[newIdx].name;
+            buffer.groupIdx = jsonArr[member].groupIdx;
+            bufferArray.push(buffer);
+        }
+        const resultCsv = json2csv.parse(bufferArray);
+        console.log(resultCsv);
+        fs.writeFile(path.join(newfilePath, fileName), resultCsv, (err) => {
+            if(err){
+                console.log(err);
+                res.send(err);
+            } else {
+                res.send("success");
+            }
+        });
+    }
 });
 module.exports = router;
