@@ -17,7 +17,7 @@ router.get('/', function(req, res, next) {
             res.send(err);
         }
         else{
-            const buffer = jsonArr;
+            var bufferArray = [];
             const jsonSize = Object.keys(jsonArr).length;
             console.log(`jsonSize : ${jsonSize}`);
             for(let i =0; i< jsonSize; i++){
@@ -30,20 +30,23 @@ router.get('/', function(req, res, next) {
                 }
                 Newarr.push(result);
             }
-            console.log(Newarr);
+            //console.log(Newarr);
             for(var member in jsonArr){
+                var buffer = new Object();
                 var newIdx = Newarr[member];
-                buffer[member].name = jsonArr[newIdx].name;
+                buffer.name = jsonArr[newIdx].name;
+                buffer.groupIdx = jsonArr[member].groupIdx;
+                bufferArray.push(buffer);
             }
-            //res.send(buffer);
-            const resultCsv = json2csv.parse(buffer);
+            res.send(bufferArray);
+            const resultCsv = json2csv.parse(bufferArray);
             console.log(resultCsv);
             fs.writeFile(path.join(newfilePath, fileName), resultCsv, (err) => {
                 if(err){
                     console.log(err);
-                    res.send(err);
+                    //res.send(err);
                 }
-                res.send("success");
+                //res.send("success");
             });
         }
     });
