@@ -53,18 +53,28 @@ module.exports = {
     },
     readAll: () => {
         const table = 'blog';
-        const query = `SELECT * FROM ${table}`
-        return pool.queryParam_None(query)
-            .then(result => {
-                return {
-                    code: statusCode.OK,
-                    json: authUtil.successTrue(responseMessage.BOARD_READ_SUCCESS, result)
-                };
-            })
-            .catch(err => {
-                console.log(err);
-                throw err;
+        const query = `SELECT * FROM ${table}`;
+        return new Promise(async (resolve, reject) => {
+            const result = await pool.queryParam_None(query);
+            if(!result) {
+                resolve({
+                    code: statusCode.NOT_FOUND,
+                    json: authUtil.successFalse(responseMessage.BLOG_READ_ALL_FAIL)
+                });
+                return;
+            }
+            if(result.length == 0){
+                resolve({
+                    code: statusCode.NOT_FOUND,
+                    json: authUtil.successFalse(responseMessage.BLOG_EMPTY)
+                });
+                return;
+            }
+            resolve({
+                code: statusCode.OK,
+                json: authUtil.successTrue(responseMessage.BLOG_READ_ALL_SUCCESS, result)
             });
+        });
     },
     read: ({
         blogIdx

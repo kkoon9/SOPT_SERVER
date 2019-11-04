@@ -10,6 +10,7 @@ module.exports = {
     ALREADY_ADDRESS: "존재하는 ADDRESS 입니다.", 
     NO_ADDRESS: "존재하지않는 ADDRESS 입니다.", 
     MISS_MATCH_PW: "비밀번호가 일치하지 않습니다",
+    BLOG_EMPTY: "블로그가 비어있습니다", 
     BLOG_CREATE_SUCCESS: "블로그 작성 성공", 
     BLOG_CREATE_FAIL:"블로그 작성 실패", 
     BLOG_READ_ALL_SUCCESS:"블로그 전체 조회 성공", 
