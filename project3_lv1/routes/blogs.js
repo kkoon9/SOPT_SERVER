@@ -127,17 +127,17 @@ router.post('/', (req, res) => {
 
 router.put('/', (req, res) => {
     const {
-        BlogIdx,
+        blogIdx,
         comment,
         phone
     } = req.body;
-    if (!BlogIdx || !comment || !phone) {
+    if (!blogIdx) {
         res.status(statusCode.BAD_REQUEST)
             .send(authUtil.successFalse(responseMessage.NULL_VALUE));
         return;
     }
     Blog.update({
-            BlogIdx,
+            blogIdx,
             comment,
             phone
         })
@@ -154,15 +154,15 @@ router.put('/', (req, res) => {
 
 router.delete('/', (req, res) => {
     const {
-        BlogIdx
+        blogIdx
     } = req.body;
-    if (!BlogIdx) {
+    if (!blogIdx) {
         res.status(statusCode.BAD_REQUEST)
             .send(authUtil.successFalse(responseMessage.NULL_VALUE));
         return;
     }
     Blog.delete({
-            BlogIdx
+            blogIdx
         })
         .then(({
             code,
