@@ -57,8 +57,18 @@ module.exports = {
         address
     }) => {
         const table = 'blog';
-        const query = `SELECT * FROM ${table} WHERE blogIdx='${blogIdx}';`;
+        let idx = blogIdx;
+        let query = `SELECT * FROM ${table} WHERE blogIdx='${idx}';`;
+        let message = responseMessage.BLOG_READ_BLOGIDX_SUCCESS;
         return new Promise(async (resolve, reject) => {
+            if(host){
+                query = `SELECT * FROM ${table} WHERE host='${host}';`;
+                message = responseMessage.BLOG_READ_HOST_SUCCESS;
+            }
+            else if(address){
+                query = `SELECT * FROM ${table} WHERE address='${address}';`;
+                message = responseMessage.BLOG_READ_ADDRESS_SUCCESS;
+            }        
             const idxResult = await pool.queryParam_None(query);
             console.log(idxResult);
             if(!idxResult){
@@ -70,53 +80,10 @@ module.exports = {
             }
             resolve({
                 code: statusCode.OK,
-                json: authUtil.successTrue(responseMessage.BLOG_READ_BLOGIDX_SUCCESS, idxResult)
+                json: authUtil.successTrue(message, idxResult)
             });
         });
     },
-    // read: (
-    //     host
-    // ) => {
-    //     const table = 'blog';
-    //     const query = `SELECT * FROM ${table} WHERE host='${host}'`;
-    //     return new Promise(async (resolve, reject) => {
-    //         const hostResult = await pool.queryParam_None(query);
-    //         console.log("hostResult : ", hostReslut);
-    //         if(!hostResult){
-    //             resolve({
-    //                 code: statusCode.NOT_FOUND,
-    //                 json: authUtil.successFalse(responseMessage.BLOG_READ_FAIL)
-    //             });
-    //             return;
-    //         }
-    //         resolve({
-    //             code: statusCode.OK,
-    //             json: authUtil.successTrue(responseMessage.BLOG_READ_HOST_SUCCESS, hostResult)
-    //         });
-    //     });
-    // },
-    // read: (
-    //     address
-    // ) => {
-    //     const table = 'blog';
-    //     const query = `SELECT * FROM ${table} WHERE address='${address}'`;
-    //     return new Promise(async (resolve, reject) => {
-    //         const addressResult = await pool.queryParam_None(query);
-    //         console.log(addressResult);
-    //         if(addressResult.length == 0){
-    //             resolve({
-    //                 code: statusCode.NOT_FOUND,
-    //                 json: authUtil.successFalse(responseMessage.BLOG_READ_FAIL)
-    //             });
-    //             return;
-    //         }
-    //         const addressId = addressResult.insertId;
-    //         resolve({
-    //             code: statusCode.OK,
-    //             json: authUtil.successTrue(responseMessage.BLOG_READ_ADDRESS_SUCCESS, addressId)
-    //         });
-    //     });
-    // },
     readAll: () => {
         const table = 'blog';
         const query = `SELECT * FROM ${table}`;

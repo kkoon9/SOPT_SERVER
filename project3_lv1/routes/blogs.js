@@ -6,8 +6,9 @@ const responseMessage = require('../module/responseMessage');
 const Blog = require('../model/blog');
 
 router.get('/Idx', (req, res) => {
-    const {blogIdx} = req.body;
-    console.log({blogIdx});
+    const {
+        blogIdx
+    } = req.body;
     if (!blogIdx) {
         res.status(statusCode.BAD_REQUEST)
             .send(authUtil.successFalse(responseMessage.NULL_VALUE));
@@ -26,8 +27,10 @@ router.get('/Idx', (req, res) => {
                 .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
         });
 });
-router.get('/:host', (req, res) => {
-    const host = req.params.host;
+router.get('/host', (req, res) => {
+    const {
+        host
+     } = req.body;
     if (!host) {
         res.status(statusCode.BAD_REQUEST)
             .send(authUtil.successFalse(responseMessage.NULL_VALUE));
@@ -47,8 +50,9 @@ router.get('/:host', (req, res) => {
         });
 });
 router.get('/address', (req, res) => {
-    const address = req.body.address;
-    console.log(req.body);
+    const {
+        address
+    } = req.body;
     if (!address) {
         res.status(statusCode.BAD_REQUEST)
             .send(authUtil.successFalse(responseMessage.NULL_VALUE));
