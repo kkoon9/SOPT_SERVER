@@ -51,19 +51,85 @@ module.exports = {
             });
         });
     },
+    read: ({
+        blogIdx,
+        host,
+        address
+    }) => {
+        const table = 'blog';
+        const query = `SELECT * FROM ${table} WHERE blogIdx='${blogIdx}';`;
+        return new Promise(async (resolve, reject) => {
+            const idxResult = await pool.queryParam_None(query);
+            console.log(idxResult);
+            if(!idxResult){
+                resolve({
+                    code: statusCode.NOT_FOUND,
+                    json: authUtil.successFalse(responseMessage.BLOG_READ_FAIL)
+                });
+                return;
+            }
+            resolve({
+                code: statusCode.OK,
+                json: authUtil.successTrue(responseMessage.BLOG_READ_BLOGIDX_SUCCESS, idxResult)
+            });
+        });
+    },
+    // read: (
+    //     host
+    // ) => {
+    //     const table = 'blog';
+    //     const query = `SELECT * FROM ${table} WHERE host='${host}'`;
+    //     return new Promise(async (resolve, reject) => {
+    //         const hostResult = await pool.queryParam_None(query);
+    //         console.log("hostResult : ", hostReslut);
+    //         if(!hostResult){
+    //             resolve({
+    //                 code: statusCode.NOT_FOUND,
+    //                 json: authUtil.successFalse(responseMessage.BLOG_READ_FAIL)
+    //             });
+    //             return;
+    //         }
+    //         resolve({
+    //             code: statusCode.OK,
+    //             json: authUtil.successTrue(responseMessage.BLOG_READ_HOST_SUCCESS, hostResult)
+    //         });
+    //     });
+    // },
+    // read: (
+    //     address
+    // ) => {
+    //     const table = 'blog';
+    //     const query = `SELECT * FROM ${table} WHERE address='${address}'`;
+    //     return new Promise(async (resolve, reject) => {
+    //         const addressResult = await pool.queryParam_None(query);
+    //         console.log(addressResult);
+    //         if(addressResult.length == 0){
+    //             resolve({
+    //                 code: statusCode.NOT_FOUND,
+    //                 json: authUtil.successFalse(responseMessage.BLOG_READ_FAIL)
+    //             });
+    //             return;
+    //         }
+    //         const addressId = addressResult.insertId;
+    //         resolve({
+    //             code: statusCode.OK,
+    //             json: authUtil.successTrue(responseMessage.BLOG_READ_ADDRESS_SUCCESS, addressId)
+    //         });
+    //     });
+    // },
     readAll: () => {
         const table = 'blog';
         const query = `SELECT * FROM ${table}`;
         return new Promise(async (resolve, reject) => {
-            const result = await pool.queryParam_None(query);
-            if(!result) {
+            const allResult = await pool.queryParam_None(query);
+            if(!allResult) {
                 resolve({
                     code: statusCode.NOT_FOUND,
                     json: authUtil.successFalse(responseMessage.BLOG_READ_ALL_FAIL)
                 });
                 return;
             }
-            if(result.length == 0){
+            if(allResult.length == 0){
                 resolve({
                     code: statusCode.NOT_FOUND,
                     json: authUtil.successFalse(responseMessage.BLOG_EMPTY)
@@ -72,32 +138,9 @@ module.exports = {
             }
             resolve({
                 code: statusCode.OK,
-                json: authUtil.successTrue(responseMessage.BLOG_READ_ALL_SUCCESS, result)
+                json: authUtil.successTrue(responseMessage.BLOG_READ_ALL_SUCCESS, allResult)
             });
         });
-    },
-    read: ({
-        blogIdx
-    }) => {
-        const table = 'blog';
-        const query = `SELECT * FROM ${table} WHERE boardIdx = '${blogIdx}'`;
-        return pool.queryParam_None(query)
-            .then(result => {
-                if (result.length == 0) {
-                    return {
-                        code: statusCode.BAD_REQUEST,
-                        json: authUtil.successFalse(responseMessage.NO_BOARD)
-                    };
-                }
-                return {
-                    code: statusCode.OK,
-                    json: authUtil.successTrue(responseMessage.BOARD_READ_SUCCESS, result[0])
-                };
-            })
-            .catch(err => {
-                console.log(err);
-                throw err;
-            });
     },
     update: ({
         blogIdx,
