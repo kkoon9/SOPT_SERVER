@@ -33,36 +33,36 @@ module.exports = {
             });
         });
     },
-    // read: ({
-    //     articleIdx,
-    //     blogIdx
-    // }) => {
-    //     const table = 'commnet';
-    //     let idx = articleIdx;
-    //     let query = `SELECT * FROM ${table} WHERE articleIdx='${idx}';`;
-    //     let message = responseMessage.ARTICLE_READ_ARTICLEIDX_SUCCESS;
-    //     return new Promise(async (resolve, reject) => {
-    //         if(blogIdx){
-    //             query = `SELECT * FROM ${table} WHERE blogIdx='${blogIdx}';`;
-    //             message = responseMessage.ARTICLE_READ_BLOGIDX_SUCCESS;
-    //         }
-    //         const idxResult = await pool.queryParam_None(query);
-    //         console.log(idxResult);
-    //         if(!idxResult){
-    //             resolve({
-    //                 code: statusCode.NOT_FOUND,
-    //                 json: authUtil.successFalse(responseMessage.ARTICLE_READ_FAIL)
-    //             });
-    //             return;
-    //         }
-    //         resolve({
-    //             code: statusCode.OK,
-    //             json: authUtil.successTrue(message, idxResult)
-    //         });
-    //     });
-    // },
+    read: ({
+        articleIdx,
+        commentIdx
+    }) => {
+        const table = 'comment';
+        let idx = commentIdx;
+        let query = `SELECT * FROM ${table} WHERE commentIdx='${idx}';`;
+        let message = responseMessage.COMMENT_READ_COMMENTIDX_SUCCESS;
+        return new Promise(async (resolve, reject) => {
+            if(articleIdx){
+                query = `SELECT * FROM ${table} WHERE articleIdx='${articleIdx}';`;
+                message = responseMessage.ARTICLE_READ_ARTICLEIDX_SUCCESS;
+            }
+            const idxResult = await pool.queryParam_None(query);
+            console.log(idxResult);
+            if(!idxResult){
+                resolve({
+                    code: statusCode.NOT_FOUND,
+                    json: authUtil.successFalse(responseMessage.COMMENT_READ_FAIL)
+                });
+                return;
+            }
+            resolve({
+                code: statusCode.OK,
+                json: authUtil.successTrue(message, idxResult)
+            });
+        });
+    },
     // readAll: () => {
-    //     const table = 'commnet';
+    //     const table = 'comment';
     //     const query = `SELECT * FROM ${table}`;
     //     return new Promise(async (resolve, reject) => {
     //         const allResult = await pool.queryParam_None(query);
@@ -91,7 +91,7 @@ module.exports = {
     //     title,
     //     content
     // }) => {
-    //     const table = 'commnet';
+    //     const table = 'comment';
     //     const conditions = [];
     //     if (title) conditions.push(`title = '${title}'`);
     //     if (content) conditions.push(`content = '${content}'`);
@@ -113,7 +113,7 @@ module.exports = {
     //     });
     // },
     // delete: ({articleIdx}) => {
-    //     const table = 'commnet';
+    //     const table = 'comment';
     //     const query = `DELETE FROM ${table} WHERE articleIdx = ${articleIdx}`;
     //     return new Promise(async (resolve, reject) => {
     //         const result = await pool.queryParam_None(query);

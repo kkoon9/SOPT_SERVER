@@ -5,43 +5,43 @@ const statusCode = require('../../../../module/statusCode');
 const responseMessage = require('../../../../module/responseMessage');
 const Comment = require('../../../../model/comment');
 
-// router.get('/commentIdx', (req, res) => {
-//     const {
-//         commentIdx
-//     } = req.body;
-//     if (!commentIdx) {
-//         res.status(statusCode.BAD_REQUEST)
-//             .send(authUtil.successFalse(responseMessage.NULL_VALUE));
-//         return;
-//     }
-//     Comment.read({
-//             commentIdx
-//         })
-//         .then(({
-//             code,
-//             json
-//         }) => {
-//             res.status(code).send(json);
-//         }).catch(err => {
-//             res.status(statusCode.INTERNAL_SERVER_ERROR)
-//                 .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
-//         });
-// });
-// router.get('/', (req, res) => {
-//     const {blogIdx} = req.params;
-//     Article.read({
-//             blogIdx
-//         })
-//         .then(({
-//             code,
-//             json
-//         }) => {
-//             res.status(code).send(json);
-//         }).catch(err => {
-//             res.status(statusCode.INTERNAL_SERVER_ERROR)
-//                 .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
-//         });
-// });
+router.get('/commentIdx', (req, res) => {
+    const {
+        commentIdx
+    } = req.body;
+    if (!commentIdx) {
+        res.status(statusCode.BAD_REQUEST)
+            .send(authUtil.successFalse(responseMessage.NULL_VALUE));
+        return;
+    }
+    Comment.read({
+            commentIdx
+        })
+        .then(({
+            code,
+            json
+        }) => {
+            res.status(code).send(json);
+        }).catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
+        });
+});
+router.get('/', (req, res) => {
+    const {articleIdx} = req.params;
+    Comment.read({
+            articleIdx
+        })
+        .then(({
+            code,
+            json
+        }) => {
+            res.status(code).send(json);
+        }).catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
+        });
+});
 // router.get('/', (req, res) => {
 //     Article.readAll()
 //         .then(({
