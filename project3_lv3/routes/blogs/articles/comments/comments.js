@@ -42,18 +42,6 @@ router.get('/', (req, res) => {
                 .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
         });
 });
-// router.get('/', (req, res) => {
-//     Article.readAll()
-//         .then(({
-//             code,
-//             json
-//         }) => {
-//             res.status(code).send(json);
-//         }).catch(err => {
-//             res.status(statusCode.INTERNAL_SERVER_ERROR)
-//                 .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
-//         });
-// });
 router.post('/', (req, res) => {
     const {articleIdx} = req.params;
     const {
@@ -90,54 +78,56 @@ router.post('/', (req, res) => {
                 .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
         });
 });
-// router.put('/', (req, res) => {
-//     const {
-//         articleIdx,
-//         title,
-//         content
-//     } = req.body;
-//     if (!articleIdx) {
-//         res.status(statusCode.BAD_REQUEST)
-//             .send(authUtil.successFalse(responseMessage.NULL_VALUE));
-//         return;
-//     }
-//     Article.update({
-//             articleIdx,
-//             content,
-//             title
-//         })
-//         .then(({
-//             code,
-//             json
-//         }) => {
-//             res.status(code).send(json);
-//         }).catch(err => {
-//             res.status(statusCode.INTERNAL_SERVER_ERROR)
-//                 .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
-//         });
-// });
+router.put('/', (req, res) => {
+    const {
+        commentIdx,
+        password,
+        comment
+    } = req.body;
+    if (!commentIdx || !password || !comment) {
+        res.status(statusCode.BAD_REQUEST)
+            .send(authUtil.successFalse(responseMessage.NULL_VALUE));
+        return;
+    }
+    Comment.update({
+            commentIdx,
+            password,
+            comment
+        })
+        .then(({
+            code,
+            json
+        }) => {
+            res.status(code).send(json);
+        }).catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
+        });
+});
 
-// router.delete('/', (req, res) => {
-//     const {
-//         articleIdx
-//     } = req.body;
-//     if (!articleIdx) {
-//         res.status(statusCode.BAD_REQUEST)
-//             .send(authUtil.successFalse(responseMessage.NULL_VALUE));
-//         return;
-//     }
-//     Article.delete({
-//             articleIdx
-//         })
-//         .then(({
-//             code,
-//             json
-//         }) => {
-//             res.status(code).send(json);
-//         }).catch(err => {
-//             res.status(statusCode.INTERNAL_SERVER_ERROR)
-//                 .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
-//         });
-// });
+router.delete('/', (req, res) => {
+    const {
+        commentIdx,
+        password
+    } = req.body;
+    if (!commentIdx || ! password) {
+        res.status(statusCode.BAD_REQUEST)
+            .send(authUtil.successFalse(responseMessage.NULL_VALUE));
+        return;
+    }
+    Comment.delete({
+            commentIdx,
+            password
+        })
+        .then(({
+            code,
+            json
+        }) => {
+            res.status(code).send(json);
+        }).catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
+        });
+});
 
 module.exports = router;

@@ -2,6 +2,7 @@ const authUtil = require('../module/authUtil');
 const statusCode = require('../module/statusCode');
 const responseMessage = require('../module/responseMessage');
 const pool = require('../module/PoolAsync');
+const encrypt = require('../module/encryption');
 
 module.exports = {
     create: ({
@@ -14,8 +15,13 @@ module.exports = {
         const fields = 'articleIdx, name, password, salt, comment';
         const questions = `?, ?, ?, ?, ?`;
         const query = `INSERT INTO ${table}(${fields}) VALUES(${questions})`;
-        const values = [articleIdx, name, password, '', comment];
         return new Promise(async (resolve, reject) => {
+            // hashed 생성
+            const {
+                hashed,
+                salt
+            } = await encrypt.encrypt(password);
+            const values = [articleIdx, name, hashed, salt, comment];
             // comment create 성공
             const result = await pool.queryParam_Parse(query, values);
             if(!result){
@@ -86,48 +92,88 @@ module.exports = {
     //         });
     //     });
     // },
-    // update: ({
-    //     articleIdx,
-    //     title,
-    //     content
-    // }) => {
-    //     const table = 'comment';
-    //     const conditions = [];
-    //     if (title) conditions.push(`title = '${title}'`);
-    //     if (content) conditions.push(`content = '${content}'`);
-    //     const setStr = conditions.length > 0 ? `SET ${conditions.join(',')}` : '';
-    //     const query = `UPDATE ${table} ${setStr} WHERE articleIdx = ${articleIdx}`;
-    //     return new Promise(async (resolve, reject) => {
-    //         const result = await pool.queryParam_None(query);
-    //         if(!result){
-    //             resolve({
-    //                 code: statusCode.NOT_FOUND,
-    //                 json: authUtil.successFalse(responseMessage.ARTICLE_UPDATE_FAIL)
-    //             });
-    //             return;
-    //         }
-    //         resolve({
-    //             code: statusCode.OK,
-    //             json: authUtil.successTrue(responseMessage.ARTICLE_UPDATE_SUCCESS, result)
-    //         });
-    //     });
-    // },
-    // delete: ({articleIdx}) => {
-    //     const table = 'comment';
-    //     const query = `DELETE FROM ${table} WHERE articleIdx = ${articleIdx}`;
-    //     return new Promise(async (resolve, reject) => {
-    //         const result = await pool.queryParam_None(query);
-    //         if(!result){
-    //             resolve({
-    //                 code: statusCode.NOT_FOUND,
-    //                 json: authUtil.successFalse(responseMessage.ARTICLE_DELETE_FAIL)
-    //             });
-    //             return;
-    //         }
-    //         resolve({
-    //             code: statusCode.OK,
-    //             json: authUtil.successTrue(responseMessage.ARTICLE_DELETE_SUCCESS, result)
-    //         });
-    //     });
-    // },
+    update: ({
+        commentIdx,
+        password,
+        comment
+    }) => {
+        const table = 'comment';
+        const conditions = [];
+        if (comment) conditions.push(`comment = '${comment}'`);
+        const setStr = conditions.length > 0 ? `SET ${conditions.join(',')}` : '';
+        const query = `UPDATE ${table} ${setStr} WHERE commentIdx = ${commentIdx}`;
+        return new Promise(async (resolve, reject) => {
+            const commentResult = await pool.queryParam_None(`SELECT * FROM ${table} WHERE commentIdx = '${commentIdx}'`);
+            if(commentResult.length == 0){
+                resolve({
+                    code: statusCode.NOT_FOUND,
+                    json: authUtil.successFalse(responseMessage.COMMENT_UPDATE_FAIL)
+                 });
+                 return;
+            }
+            const comment = commentResult[0];
+            const {
+                hashed
+            } = await encrypt.encryptWithSalt(password, comment.salt);
+            if(comment.password != hashed){
+                resolve({
+                    code: statusCode.BAD_REQUEST,
+                    json: authUtil.successFalse(responseMessage.MISS_MATCH_PW)
+                });
+                return;
+            }
+            const result = await pool.queryParam_None(query);
+            if(!result){
+                resolve({
+                    code: statusCode.NOT_FOUND,
+                    json: authUtil.successFalse(responseMessage.COMMENT_UPDATE_FAIL)
+                });
+                return;
+            }
+            resolve({
+                code: statusCode.OK,
+                json: authUtil.successTrue(responseMessage.COMMENT_UPDATE_SUCCESS, result)
+            });
+        });
+    },
+    delete: ({
+        commentIdx,
+        password
+    }) => {
+        const table = 'comment';
+        const query = `DELETE FROM ${table} WHERE commentIdx = ${commentIdx}`;
+        return new Promise(async (resolve, reject) => {
+            const commentResult = await pool.queryParam_None(`SELECT * FROM ${table} WHERE commentIdx = '${commentIdx}'`);
+            if(commentResult.length == 0){
+                resolve({
+                    code: statusCode.NOT_FOUND,
+                    json: authUtil.successFalse(responseMessage.COMMENT_UPDATE_FAIL)
+                 });
+                 return;
+            }
+            const comment = commentResult[0];
+            const {
+                hashed
+            } = await encrypt.encryptWithSalt(password, comment.salt);
+            if(comment.password != hashed){
+                resolve({
+                    code: statusCode.BAD_REQUEST,
+                    json: authUtil.successFalse(responseMessage.MISS_MATCH_PW)
+                });
+                return;
+            }
+            const result = await pool.queryParam_None(query);
+            if(!result){
+                resolve({
+                    code: statusCode.NOT_FOUND,
+                    json: authUtil.successFalse(responseMessage.COMMENT_DELETE_FAIL)
+                });
+                return;
+            }
+            resolve({
+                code: statusCode.OK,
+                json: authUtil.successTrue(responseMessage.COMMENT_DELETE_SUCCESS, result)
+            });
+        });
+    },
 };
