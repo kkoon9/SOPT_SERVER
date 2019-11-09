@@ -1,33 +1,12 @@
 const express = require('express');
-const router = express.Router();
-const authUtil = require('../module/authUtil');
-const statusCode = require('../module/statusCode');
-const responseMessage = require('../module/responseMessage');
-const Article = require('../model/article');
+const router = express.Router({mergeParams: true});
+const authUtil = require('../../module/authUtil');
+const statusCode = require('../../module/statusCode');
+const responseMessage = require('../../module/responseMessage');
+const Blog = require('../../model/blog');
 
-router.get('/articleIdx', (req, res) => {
-    const {
-        articleIdx
-    } = req.body;
-    if (!articleIdx) {
-        res.status(statusCode.BAD_REQUEST)
-            .send(authUtil.successFalse(responseMessage.NULL_VALUE));
-        return;
-    }
-    Article.read({
-            articleIdx
-        })
-        .then(({
-            code,
-            json
-        }) => {
-            res.status(code).send(json);
-        }).catch(err => {
-            res.status(statusCode.INTERNAL_SERVER_ERROR)
-                .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
-        });
-});
-router.get('/blogIdx', (req, res) => {
+
+router.get('/Idx', (req, res) => {
     const {
         blogIdx
     } = req.body;
@@ -36,7 +15,7 @@ router.get('/blogIdx', (req, res) => {
             .send(authUtil.successFalse(responseMessage.NULL_VALUE));
         return;
     }
-    Article.read({
+    Blog.read({
             blogIdx
         })
         .then(({
@@ -49,8 +28,52 @@ router.get('/blogIdx', (req, res) => {
                 .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
         });
 });
+router.get('/host', (req, res) => {
+    const {
+        host
+     } = req.body;
+    if (!host) {
+        res.status(statusCode.BAD_REQUEST)
+            .send(authUtil.successFalse(responseMessage.NULL_VALUE));
+        return;
+    }
+    Blog.read({
+            host
+        })
+        .then(({
+            code,
+            json
+        }) => {
+            res.status(code).send(json);
+        }).catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
+        });
+});
+router.get('/address', (req, res) => {
+    const {
+        address
+    } = req.body;
+    if (!address) {
+        res.status(statusCode.BAD_REQUEST)
+            .send(authUtil.successFalse(responseMessage.NULL_VALUE));
+        return;
+    }
+    Blog.read({
+            address
+        })
+        .then(({
+            code,
+            json
+        }) => {
+            res.status(code).send(json);
+        }).catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
+        });
+});
 router.get('/', (req, res) => {
-    Article.readAll()
+    Blog.readAll()
         .then(({
             code,
             json
@@ -64,28 +87,32 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
     const {
-        blogIdx,
-        title,
-        writer,
-        content
+        host,
+        address,
+        comment,
+        phone
     } = req.body;
-    if (!blogIdx || !title || !writer || !content) {
+    console.log({
+        host,
+        address,
+        comment,
+        phone
+    });
+    if (!host || !address) {
         const missParameters = Object.entries({
-                blogIdx,
-                title,
-                writer,
-                content
+                host,
+                address
             })
             .filter(it => it[1] == undefined).map(it => it[0]).join(',');
         res.status(statusCode.BAD_REQUEST)
             .send(authUtil.successFalse(`${responseMessage.NULL_VALUE}, ${missParameters}`));
         return;
     }
-    Article.create({
-            blogIdx,
-            title,
-            writer,
-            content
+    Blog.create({
+            host,
+            address,
+            comment,
+            phone
         })
         .then(({
             code,
@@ -98,21 +125,22 @@ router.post('/', (req, res) => {
                 .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
         });
 });
+
 router.put('/', (req, res) => {
     const {
-        articleIdx,
-        title,
-        content
+        blogIdx,
+        comment,
+        phone
     } = req.body;
-    if (!articleIdx) {
+    if (!blogIdx) {
         res.status(statusCode.BAD_REQUEST)
             .send(authUtil.successFalse(responseMessage.NULL_VALUE));
         return;
     }
-    Article.update({
-            articleIdx,
-            content,
-            title
+    Blog.update({
+            blogIdx,
+            comment,
+            phone
         })
         .then(({
             code,
@@ -127,15 +155,15 @@ router.put('/', (req, res) => {
 
 router.delete('/', (req, res) => {
     const {
-        articleIdx
+        blogIdx
     } = req.body;
-    if (!articleIdx) {
+    if (!blogIdx) {
         res.status(statusCode.BAD_REQUEST)
             .send(authUtil.successFalse(responseMessage.NULL_VALUE));
         return;
     }
-    Article.delete({
-            articleIdx
+    Blog.delete({
+            blogIdx
         })
         .then(({
             code,
