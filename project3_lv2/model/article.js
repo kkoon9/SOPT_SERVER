@@ -42,39 +42,34 @@ module.exports = {
             });
         });
     },
-    // read: ({
-    //     blogIdx,
-    //     host,
-    //     address
-    // }) => {
-    //     const table = 'blog';
-    //     let idx = blogIdx;
-    //     let query = `SELECT * FROM ${table} WHERE blogIdx='${idx}';`;
-    //     let message = responseMessage.BLOG_READ_BLOGIDX_SUCCESS;
-    //     return new Promise(async (resolve, reject) => {
-    //         if(host){
-    //             query = `SELECT * FROM ${table} WHERE host='${host}';`;
-    //             message = responseMessage.BLOG_READ_HOST_SUCCESS;
-    //         }
-    //         else if(address){
-    //             query = `SELECT * FROM ${table} WHERE address='${address}';`;
-    //             message = responseMessage.BLOG_READ_ADDRESS_SUCCESS;
-    //         }        
-    //         const idxResult = await pool.queryParam_None(query);
-    //         console.log(idxResult);
-    //         if(!idxResult){
-    //             resolve({
-    //                 code: statusCode.NOT_FOUND,
-    //                 json: authUtil.successFalse(responseMessage.BLOG_READ_FAIL)
-    //             });
-    //             return;
-    //         }
-    //         resolve({
-    //             code: statusCode.OK,
-    //             json: authUtil.successTrue(message, idxResult)
-    //         });
-    //     });
-    // },
+    read: ({
+        articleIdx,
+        blogIdx
+    }) => {
+        const table = 'article';
+        let idx = articleIdx;
+        let query = `SELECT * FROM ${table} WHERE articleIdx='${idx}';`;
+        let message = responseMessage.ARTICLE_READ_ARTICLEIDX_SUCCESS;
+        return new Promise(async (resolve, reject) => {
+            if(blogIdx){
+                query = `SELECT * FROM ${table} WHERE blogIdx='${blogIdx}';`;
+                message = responseMessage.ARTICLE_READ_BLOGIDX_SUCCESS;
+            }
+            const idxResult = await pool.queryParam_None(query);
+            console.log(idxResult);
+            if(!idxResult){
+                resolve({
+                    code: statusCode.NOT_FOUND,
+                    json: authUtil.successFalse(responseMessage.ARTICLE_READ_FAIL)
+                });
+                return;
+            }
+            resolve({
+                code: statusCode.OK,
+                json: authUtil.successTrue(message, idxResult)
+            });
+        });
+    },
     readAll: () => {
         const table = 'article';
         const query = `SELECT * FROM ${table}`;

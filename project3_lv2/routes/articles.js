@@ -5,72 +5,50 @@ const statusCode = require('../module/statusCode');
 const responseMessage = require('../module/responseMessage');
 const Article = require('../model/article');
 
-// router.get('/Idx', (req, res) => {
-//     const {
-//         blogIdx
-//     } = req.body;
-//     if (!blogIdx) {
-//         res.status(statusCode.BAD_REQUEST)
-//             .send(authUtil.successFalse(responseMessage.NULL_VALUE));
-//         return;
-//     }
-//     Blog.read({
-//             blogIdx
-//         })
-//         .then(({
-//             code,
-//             json
-//         }) => {
-//             res.status(code).send(json);
-//         }).catch(err => {
-//             res.status(statusCode.INTERNAL_SERVER_ERROR)
-//                 .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
-//         });
-// });
-// router.get('/host', (req, res) => {
-//     const {
-//         host
-//     } = req.body;
-//     if (!host) {
-//         res.status(statusCode.BAD_REQUEST)
-//             .send(authUtil.successFalse(responseMessage.NULL_VALUE));
-//         return;
-//     }
-//     Blog.read({
-//             host
-//         })
-//         .then(({
-//             code,
-//             json
-//         }) => {
-//             res.status(code).send(json);
-//         }).catch(err => {
-//             res.status(statusCode.INTERNAL_SERVER_ERROR)
-//                 .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
-//         });
-// });
-// router.get('/address', (req, res) => {
-//     const {
-//         address
-//     } = req.body;
-//     if (!address) {
-//         res.status(statusCode.BAD_REQUEST)
-//             .send(authUtil.successFalse(responseMessage.NULL_VALUE));
-//         return;
-//     }
-//     Blog.read({
-//             address
-//         })
-//         .then(({
-//             code,
-//             json
-//         }) => {
-//             res.status(code).send(json);
-//         }).catch(err => {
-//             res.status(statusCode.INTERNAL_SERVER_ERROR)
-//                 .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
-//         });
-// });
+router.get('/articleIdx', (req, res) => {
+    const {
+        articleIdx
+    } = req.body;
+    if (!articleIdx) {
+        res.status(statusCode.BAD_REQUEST)
+            .send(authUtil.successFalse(responseMessage.NULL_VALUE));
+        return;
+    }
+    Article.read({
+            articleIdx
+        })
+        .then(({
+            code,
+            json
+        }) => {
+            res.status(code).send(json);
+        }).catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
+        });
+});
+router.get('/blogIdx', (req, res) => {
+    const {
+        blogIdx
+    } = req.body;
+    if (!blogIdx) {
+        res.status(statusCode.BAD_REQUEST)
+            .send(authUtil.successFalse(responseMessage.NULL_VALUE));
+        return;
+    }
+    Article.read({
+            blogIdx
+        })
+        .then(({
+            code,
+            json
+        }) => {
+            res.status(code).send(json);
+        }).catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
+        });
+});
 router.get('/', (req, res) => {
     Article.readAll()
         .then(({
