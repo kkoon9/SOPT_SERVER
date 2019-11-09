@@ -98,55 +98,54 @@ router.post('/', (req, res) => {
                 .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
         });
 });
+router.put('/', (req, res) => {
+    const {
+        articleIdx,
+        title,
+        content
+    } = req.body;
+    if (!articleIdx) {
+        res.status(statusCode.BAD_REQUEST)
+            .send(authUtil.successFalse(responseMessage.NULL_VALUE));
+        return;
+    }
+    Article.update({
+            articleIdx,
+            content,
+            title
+        })
+        .then(({
+            code,
+            json
+        }) => {
+            res.status(code).send(json);
+        }).catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
+        });
+});
 
-// router.put('/', (req, res) => {
-//     const {
-//         blogIdx,
-//         comment,
-//         phone
-//     } = req.body;
-//     if (!blogIdx) {
-//         res.status(statusCode.BAD_REQUEST)
-//             .send(authUtil.successFalse(responseMessage.NULL_VALUE));
-//         return;
-//     }
-//     Blog.update({
-//             blogIdx,
-//             comment,
-//             phone
-//         })
-//         .then(({
-//             code,
-//             json
-//         }) => {
-//             res.status(code).send(json);
-//         }).catch(err => {
-//             res.status(statusCode.INTERNAL_SERVER_ERROR)
-//                 .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
-//         });
-// });
-
-// router.delete('/', (req, res) => {
-//     const {
-//         blogIdx
-//     } = req.body;
-//     if (!blogIdx) {
-//         res.status(statusCode.BAD_REQUEST)
-//             .send(authUtil.successFalse(responseMessage.NULL_VALUE));
-//         return;
-//     }
-//     Blog.delete({
-//             blogIdx
-//         })
-//         .then(({
-//             code,
-//             json
-//         }) => {
-//             res.status(code).send(json);
-//         }).catch(err => {
-//             res.status(statusCode.INTERNAL_SERVER_ERROR)
-//                 .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
-//         });
-// });
+router.delete('/', (req, res) => {
+    const {
+        articleIdx
+    } = req.body;
+    if (!articleIdx) {
+        res.status(statusCode.BAD_REQUEST)
+            .send(authUtil.successFalse(responseMessage.NULL_VALUE));
+        return;
+    }
+    Article.delete({
+            articleIdx
+        })
+        .then(({
+            code,
+            json
+        }) => {
+            res.status(code).send(json);
+        }).catch(err => {
+            res.status(statusCode.INTERNAL_SERVER_ERROR)
+                .send(authUtil.successFalse(responseMessage.INTERNAL_SERVER_ERROR));
+        });
+});
 
 module.exports = router;

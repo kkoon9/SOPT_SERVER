@@ -95,48 +95,48 @@ module.exports = {
             });
         });
     },
-    // update: ({
-    //     blogIdx,
-    //     phone,
-    //     comment
-    // }) => {
-    //     const table = 'blog';
-    //     const conditions = [];
-    //     if (phone) conditions.push(`phone = '${phone}'`);
-    //     if (comment) conditions.push(`comment = '${comment}'`);
-    //     const setStr = conditions.length > 0 ? `SET ${conditions.join(',')}` : '';
-    //     const query = `UPDATE ${table} ${setStr} WHERE blogIdx = ${blogIdx}`;
-    //     return new Promise(async (resolve, reject) => {
-    //         const result = await pool.queryParam_None(query);
-    //         if(!result){
-    //             resolve({
-    //                 code: statusCode.NOT_FOUND,
-    //                 json: authUtil.successFalse(responseMessage.BLOG_UPDATE_FAIL)
-    //             });
-    //             return;
-    //         }
-    //         resolve({
-    //             code: statusCode.OK,
-    //             json: authUtil.successTrue(responseMessage.BLOG_UPDATE_SUCCESS, result)
-    //         });
-    //     });
-    // },
-    // delete: ({blogIdx}) => {
-    //     const table = 'blog';
-    //     const query = `DELETE FROM ${table} WHERE blogIdx = ${blogIdx}`;
-    //     return new Promise(async (resolve, reject) => {
-    //         const result = await pool.queryParam_None(query);
-    //         if(!result){
-    //             resolve({
-    //                 code: statusCode.NOT_FOUND,
-    //                 json: authUtil.successFalse(responseMessage.BLOG_DELETE_FAIL)
-    //             });
-    //             return;
-    //         }
-    //         resolve({
-    //             code: statusCode.OK,
-    //             json: authUtil.successTrue(responseMessage.BLOG_DELETE_SUCCESS, result)
-    //         });
-    //     });
-    // },
+    update: ({
+        articleIdx,
+        title,
+        content
+    }) => {
+        const table = 'article';
+        const conditions = [];
+        if (title) conditions.push(`title = '${title}'`);
+        if (content) conditions.push(`content = '${content}'`);
+        const setStr = conditions.length > 0 ? `SET ${conditions.join(',')}` : '';
+        const query = `UPDATE ${table} ${setStr} WHERE articleIdx = ${articleIdx}`;
+        return new Promise(async (resolve, reject) => {
+            const result = await pool.queryParam_None(query);
+            if(!result){
+                resolve({
+                    code: statusCode.NOT_FOUND,
+                    json: authUtil.successFalse(responseMessage.ARTICLE_UPDATE_FAIL)
+                });
+                return;
+            }
+            resolve({
+                code: statusCode.OK,
+                json: authUtil.successTrue(responseMessage.ARTICLE_UPDATE_SUCCESS, result)
+            });
+        });
+    },
+    delete: ({articleIdx}) => {
+        const table = 'article';
+        const query = `DELETE FROM ${table} WHERE articleIdx = ${articleIdx}`;
+        return new Promise(async (resolve, reject) => {
+            const result = await pool.queryParam_None(query);
+            if(!result){
+                resolve({
+                    code: statusCode.NOT_FOUND,
+                    json: authUtil.successFalse(responseMessage.ARTICLE_DELETE_FAIL)
+                });
+                return;
+            }
+            resolve({
+                code: statusCode.OK,
+                json: authUtil.successTrue(responseMessage.ARTICLE_DELETE_SUCCESS, result)
+            });
+        });
+    },
 };
