@@ -1,37 +1,32 @@
 // authUtil.js
-// 미들웨어 구현
 
 const jwt = require('../jwt');
-const responseMessage = require('./responseMessage');
-const statusCode = require('./statustatusCodeode');
+const rM = require('./responseMessage');
+const sC = require('./statusCode');
 const util = require('./utils');
 
 const authUtil = {
     LoggedIn : async(req, res, next) => {
         const token = req.headers.token;
-        if(!token) { // 토큰이 없다면
-            res
-            .status(statusCode.BAD_REQUEST)
-            .send(util.successFalse(responseMessage.EMPTY_TOKEN));
+        if(!token) {
+            res.status(sC.BAD_REQUEST).send(util.successFalse(sC.BAD_REQUEST, rM.EMPTY_TOKEN));
             return;
         }
 
         const result = jwt.verify(token);   // token이 있다면 verify를 통해 검증
-
-        if(result == -3) { // 만료된 토큰
-            res.status(statusCode.UNAUTHORIZED).send(util.successFalse(responseMessage.EXPIRED_TOKEN));
+        if(result == -3) {
+            res.status(sC.UNAUTHORIZED).send(util.successFalse(sC.UNAUTHORIZED, rM.EXPIRED_TOKEN));
             return;
         }
 
-
-        if(result == -2) { // 유효하지 않은 토큰
-            res.status(statusCode.UNAUTHORIZED).send(util.successFalse(responseMessage.INVALID_TOKEN));
+        if(result == -2) {
+            res.status(sC.UNAUTHORIZED).send(util.successFalse(sC.UNAUTHORIZED, rM.INVALID_TOKEN));
             return;
         }
 
         const userIdx = result.idx;
         if(!userIdx) {
-            res.status(statusCode.BAD_REQUEST).send(util.successFalse(responseMessage.NULL_VALUE));
+            res.status(sC.BAD_REQUEST).send(util.successFalse(sC.BAD_REQUEST, rM.NULL_VALUE));
             return;
         }
 
