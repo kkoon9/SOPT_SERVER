@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router({mergeParams: true});
 
-router.use('/blog', require('./blog'));
-//router.use('/user', require('./user'));
+//router.use('/:blogIdx/articles', require('./articles'));
+router.use('/', require('./articles'));
 
 module.exports = router;
